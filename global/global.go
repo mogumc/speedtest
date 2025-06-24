@@ -1,0 +1,44 @@
+package global
+
+import "time"
+
+type ClientInfo struct {
+	HostIP string
+	City   string
+	CityID int
+	ISP    string
+	ISPID  int
+}
+
+var GlobalClientInfo = &ClientInfo{}
+
+type ApacheAgent struct {
+	HostIP       string
+	Location     int
+	Name         string
+	Operator     int
+	BlockSize    int64
+	BandWidth    int64
+	Protocol     string
+	Description  string
+	DownloadPath string
+	UploadPath   string
+}
+
+var GlobalApacheAgents []ApacheAgent
+
+var (
+	UploadBlockSize = 20 * 1024 * 1024 // 20 MB
+	UserAgent       = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
+	TestDuration    = 8 * time.Second
+	MaxTimeout      = 15 * time.Second
+)
+
+type SpeedTestResult struct {
+	NodeName   string
+	HostIP     string
+	SpeedKBps  float64
+	DurationMs int64
+	Threads    int
+	TotalData  float64
+}
