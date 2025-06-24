@@ -21,79 +21,74 @@ func DownloadTestWithURL(url string, _ int) (speedKBps float64, durationMs int64
 			},
 		},
 	}
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("[x] 创建请求失败: %v\n", err)
+		return
+	}
 	req.Header.Set("User-Agent", global.UserAgent)
-
 	var totalBytes int64
 	var reqCount int
 	var firstStart, lastEnd time.Time
 	stopTimer := time.NewTimer(global.TestDuration)
-
 	defer stopTimer.Stop()
-
 	for {
 		select {
 		case <-stopTimer.C:
 			goto ExitLoop
 		default:
 		}
-
 		start := time.Now()
 		if firstStart.IsZero() {
 			firstStart = start
 		}
-
 		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Printf("[x] 请求失败 %s | 错误：%v\n", url, err)
 			continue
 		}
-
 		expectedSize, isChunked := parseContentHeader(resp)
 		bytesRead, err := io.Copy(io.Discard, resp.Body)
 		resp.Body.Close()
-
 		if err != nil {
 			fmt.Printf("[x] 读取响应体失败 %s | 错误：%v\n", url, err)
 			continue
 		}
-
 		reqCount++
-		if isChunked || expectedSize <= 0 {
-			totalBytes += bytesRead
-		} else {
+		if !isChunked && expectedSize > 0 {
 			totalBytes += expectedSize
+		} else {
+			totalBytes += bytesRead
 		}
-
 		lastEnd = time.Now()
 	}
-
 ExitLoop:
 	if reqCount < 1 {
-		fmt.Printf("[x] 测试失败!当前节点不可用!\n")
+		fmt.Printf("[x] 测试失败!当前节点不可用或速度过慢!\n")
 		return
 	}
 	finalDuration := lastEnd.Sub(firstStart)
 	speedKBps = float64(totalBytes) / 1024 / finalDuration.Seconds()
 	durationMs = finalDuration.Milliseconds()
-	fmt.Printf("[✔] 测试结束 URL=%s | %.2f KB/s | 总 %d s | 总数据 %d MB| 成功下载次数 %d次请求\n", url, speedKBps, int(finalDuration.Round(time.Second).Seconds()), int(totalBytes/(1024*1024)), reqCount)
-	totaldata = float64(totalBytes) / (1024 * 1024)
-	return speedKBps, durationMs, totaldata
+	dataMB := float64(totalBytes) / (1024 * 1024)
+	fmt.Printf(
+		"[✔] 测试结束 URL=%s | %.2f KB/s | 总 %d 秒 | 总数据 %.2f MB | 成功下载次数 %d 次请求\n",
+		url, speedKBps, int(finalDuration.Round(time.Second).Seconds()), dataMB, reqCount,
+	)
+	return speedKBps, durationMs, dataMB
 }
 
 func parseContentHeader(resp *http.Response) (expectedSize int64, isChunked bool) {
-	isChunked = len(resp.TransferEncoding) > 0 && resp.TransferEncoding[0] == "chunked"
-
-	cl := resp.Header.Get("Content-Length")
-	if cl != "" {
-		size, err := strconv.ParseInt(cl, 10, 64)
-		if err == nil && size > 0 {
-			return size, isChunked
+	if cl := resp.Header.Get("Content-Length"); cl != "" {
+		var err error
+		expectedSize, err = strconv.ParseInt(cl, 10, 64)
+		if err != nil || expectedSize < 0 {
+			return 0, true
 		}
+		return expectedSize, false
 	}
-	return -1, isChunked
+	return 0, true
 }
-
 func SingleThreadTest(bestNode global.ApacheAgent) global.SpeedTestResult {
 	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.DownloadPath)
 	fmt.Printf("[+] 单线程下载测速开始 URL=%s\n", url)

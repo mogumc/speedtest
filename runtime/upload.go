@@ -84,7 +84,7 @@ func UploadTestWithURL(url string, duration time.Duration, threads int) (result 
 		count++
 	}
 	if count < 1 {
-		fmt.Printf("[x] 测试失败!当前节点不可用!\n")
+		fmt.Printf("[x] 测试失败!当前节点不可用或速度过慢!\n")
 		return
 	}
 	elapsed := time.Since(startTime)
