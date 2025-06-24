@@ -62,7 +62,6 @@ func UploadTestWithURL(url string, duration time.Duration, threads int) (result 
 		}
 		req, _ := http.NewRequest("POST", url, trackedReader)
 		req.Header.Set("User-Agent", global.UserAgent)
-		req.Header.Set("Content-Type", "application/octet-stream")
 		req.ContentLength = int64(payloadReader.Size())
 		ctx, cancel := context.WithTimeout(context.Background(), global.MaxTimeout)
 		defer cancel()
