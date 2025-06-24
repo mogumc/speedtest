@@ -19,7 +19,7 @@
             "operator": 100000,
             "protocol": "https",
             "downloadpath":"__down?bytes=25000000",
-            "uploadpath":"__down"
+            "uploadpath":"__up"
         }
     ]
 }
