@@ -31,8 +31,6 @@ func main() {
 		global.GlobalApacheAgents = utils.MergeUnique(global.GlobalApacheAgents, localAgents)
 	}
 
-	global.GlobalApacheAgents = localAgents //debug
-
 	fmt.Println("\n⚡️正在测试最佳节点...\n")
 	bestNode, err := runtime.SelectBestNode()
 	if err != nil {
