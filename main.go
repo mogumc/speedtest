@@ -31,13 +31,13 @@ func main() {
 		global.GlobalApacheAgents = utils.MergeUnique(global.GlobalApacheAgents, localAgents)
 	}
 
-	fmt.Println("\n⚡️正在测试最佳节点...\n")
+	fmt.Printf("\n⚡️正在测试最佳节点...\n")
 	bestNode, err := runtime.SelectBestNode()
 	if err != nil {
-		fmt.Println("[x]", err)
+		fmt.Printf("[x] %v", err)
 		return
 	}
-	fmt.Println("✅ 最优节点选择成功！\n")
+	fmt.Printf("✅ 最优节点选择成功！\n")
 	fmt.Printf("名称: %s\n", bestNode.Name)
 	fmt.Printf("信息: %s\n", bestNode.Description)
 	NewBandWidth := utils.BandwidthToGbps(bestNode.BandWidth)
