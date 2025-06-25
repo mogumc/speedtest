@@ -30,8 +30,8 @@ var GlobalApacheAgents []ApacheAgent
 var (
 	UploadBlockSize = 20 * 1024 * 1024 // 20 MB
 	UserAgent       = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
-	TestDuration    = 8 * time.Second
-	MaxTimeout      = 15 * time.Second
+	TestDuration    = 10 * time.Second
+	MaxTimeout      = 30 * time.Second
 )
 
 type SpeedTestResult struct {

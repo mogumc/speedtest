@@ -70,3 +70,9 @@ func SelectBestNode() (*global.ApacheAgent, error) {
 	}
 	return nil, fmt.Errorf("无法获取可用节点")
 }
+
+func ShowAllNode(Agents []global.ApacheAgent) {
+	for i, p := range Agents {
+		fmt.Printf("[%d] 名称: %s,描述: %s\n", i, p.Name, p.Description)
+	}
+}
