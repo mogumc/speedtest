@@ -14,7 +14,7 @@ import (
 func main() {
 	err := runtime.InitGlobal()
 	if err != nil {
-		fmt.Println("[x] 在线配置加载失败:", err)
+		fmt.Println("[x] 在线配置加载失败: %v", err)
 		return
 	}
 
