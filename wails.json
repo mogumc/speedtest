@@ -7,7 +7,13 @@
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "MoGuQAQ",
-    "email": ""
-  }
+    "name": "MoGuQAQ"
+  },
+   "info": {
+    "companyName": "MoGuQAQ",
+    "productName": "speedtest-gd",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright © 2025 MoGuQAQ",
+    "comments": "GPL-3.0 license"
+   }
 }
