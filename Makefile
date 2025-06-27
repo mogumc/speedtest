@@ -60,10 +60,14 @@ package:
 ifeq ($(GOOS), windows)
 	zip -r $(PKG_OUTPUT_DIR)/$(APP_NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(OUTPUT_EXEC)
 else ifeq ($(GOOS), darwin)
-	hdiutil verify $(OUTPUT_EXEC)
-	hdiutil mount $(OUTPUT_EXEC)
-	hdiutil create -volname "$(APP_NAME)" -srcfolder $(OUTPUT_EXEC) -ov -format UDZO $(PKG_OUTPUT_DIR)/$(APP_NAME)-$(VERSION)-$(GOOS)-universal.dmg
-else
+	@echo "Packaging macOS app bundle..."
+	mkdir -p $(PKG_OUTPUT_DIR)/$(TARGET_NAME).dmgtmp/$(APP_NAME).app/Contents/MacOS/
+	cp -R $(OUTPUT_EXEC).app $(PKG_OUTPUT_DIR)/$(TARGET_NAME).app
+	cp $(OUTPUT_EXEC) $(PKG_OUTPUT_DIR)/$(TARGET_NAME).app/Contents/MacOS/
+	chmod +x $(PKG_OUTPUT_DIR)/$(TARGET_NAME).app/Contents/MacOS/$(APP_NAME)
+	hdiutil create -size 500m -fs HFS+ -volname "$(APP_NAME)" -srcfolder $(PKG_OUTPUT_DIR)/$(TARGET_NAME).app $(PKG_OUTPUT_DIR)/$(APP_NAME)-$(VERSION)-$(GOOS)-$(GOARCH).dmg
+	rm -rf $(PKG_OUTPUT_DIR)/$(TARGET_NAME).dmgtmp
+else # linux
 	tar -czvf $(PKG_OUTPUT_DIR)/$(APP_NAME)-$(VERSION)-$(GOOS)-$(GOARCH).tar.gz -C $(PKG_OUTPUT_DIR) $(TARGET_NAME)
 endif
 
