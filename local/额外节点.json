@@ -1,0 +1,111 @@
+{
+    "referenceApacheAgents": [
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "Cloudflare",
+            "hostIp": "speed.cloudflare.com:443",
+            "location": 0,
+            "name":"Cloudflare",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"__down?bytes=25000000",
+            "uploadpath":"__up"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "AMS",
+            "hostIp": "ams.speedtest.clouvider.net:443",
+            "location": 0,
+            "name":"Clouvider01",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        }, {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "LA",
+            "hostIp": "la.speedtest.clouvider.net:443",
+            "location": 0,
+            "name":"Clouvider02",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "四川移动",
+            "hostIp": "node-112-45-112-83.speedtest.cn:51090",
+            "location": 0,
+            "name":"成都移动",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"download?size=25000000",
+            "uploadpath":"upload"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "绥化广电",
+            "hostIp": "node-111-42-93-106.speedtest.cn:51090",
+            "location": 0,
+            "name":"绥化广电1",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"download?size=25000000",
+            "uploadpath":"upload"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "绥化广电",
+            "hostIp": "node-111-42-93-105.speedtest.cn:51090",
+            "location": 0,
+            "name":"绥化广电2",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"download?size=25000000",
+            "uploadpath":"upload"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "上海电信",
+            "hostIp": "speedtest1.online.sh.cn:8080",
+            "location": 0,
+            "name":"上海电信",
+            "operator": 100000,
+            "protocol": "https", 
+            "downloadpath":"download?size=25000000",
+            "uploadpath":"upload"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "HGC",
+            "hostIp": "speedtest.hgc.jp:443",
+            "location": 0,
+            "name":"日本",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"downloading",
+            "uploadpath":"upload"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "Hinet",
+            "hostIp": "ty1.chtm.hinet.net.prod.hosts.ooklaserver.net:8080",
+            "location": 0,
+            "name":"台湾02",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"download?size=25000000",
+            "uploadpath":"upload"
+        }
+    ]
+}

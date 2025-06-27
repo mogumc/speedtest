@@ -1,0 +1,63 @@
+{
+    "referenceApacheAgents": [
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "189",
+            "hostIp": "appupdates.189.cn:443",
+            "location": 0,
+            "name":"中国电信",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"client/ctclientchannel78.apk",
+            "uploadpath":"favicon.ico"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "mihoyo",
+            "hostIp": "hyp-webstatic.mihoyo.com:443",
+            "location": 0,
+            "name":"米哈游",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"hyp-client/HYP_1.7_CN.exe",
+            "uploadpath":"favicon.ico"
+        },{
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "鸣潮",
+            "hostIp": "mirrors2-package-mc.aki-game.com:443",
+            "location": 0,
+            "name":"库洛",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"client/download/20250424153720_4g9flkIATgP9lDC254/WutheringWaves_official_setup_2.1.1.0.exe",
+            "uploadpath":"favicon.ico"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "哔哩哔哩",
+            "hostIp": "activity.hdslb.com:443",
+            "location": 0,
+            "name":"哔哩哔哩",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"zzjs/20160608appDownload/img/pc/uwp.png",
+            "uploadpath":"favicon.ico"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "阿里巴巴",
+            "hostIp": "gw.alicdn.com:443",
+            "location": 0,
+            "name":"阿里巴巴",
+            "operator": 100000,
+            "protocol": "https",
+            "downloadpath":"tfscom/TB1fASCxhjaK1RjSZKzXXXVwXXa.jpg",
+            "uploadpath":"favicon.ico"
+        }
+    ]
+}

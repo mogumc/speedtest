@@ -1,0 +1,136 @@
+{
+    "referenceApacheAgents": [
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "中国科学技术大学VPN",
+            "hostIp": "revproxy.ustc.edu.cn:8000",
+            "location": 0,
+            "name":"Edu00",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "中国科学技术大学",
+            "hostIp": "test.ustc.edu.cn:443",
+            "location": 0,
+            "name":"Edu01",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "齐鲁工业大学",
+            "hostIp": "speed.qlu.edu.cn:443",
+            "location": 0,
+            "name":"Edu02",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "南京航空航天大学",
+            "hostIp": "speed.nuaa.edu.cn:80",
+            "location": 0,
+            "name":"Edu03",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "南京大学",
+            "hostIp": "test.nju.edu.cn:443",
+            "location": 0,
+            "name":"Edu04",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "同济大学",
+            "hostIp": "dev.tongji.edu.cn:443",
+            "location": 0,
+            "name":"Edu05",
+            "operator": 0,
+            "protocol": "https",
+            "downloadpath":"speedtest/backend/garbage.php?ckSize=20",
+            "uploadpath":"speedtest/backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "江苏大学",
+            "hostIp": "speed.ujs.edu.cn:80",
+            "location": 0,
+            "name":"Edu06",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "云南师范大学",
+            "hostIp": "speedtest.ynnu.edu.cn:443",
+            "location": 0,
+            "name":"Edu07",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "云南师范大学",
+            "hostIp": "speedtest.ynnu.edu.cn:443",
+            "location": 0,
+            "name":"Edu07",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "河南财政金融学院",
+            "hostIp": "test.hafu.edu.cn:80",
+            "location": 0,
+            "name":"Edu08",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        },
+        {
+            "bandwidth": 125000000,
+            "blockSize": 0,
+            "description": "淮南联合大学",
+            "hostIp": "speed.hnuu.edu.cn:80",
+            "location": 0,
+            "name":"Edu09",
+            "operator": 0,
+            "protocol": "http",
+            "downloadpath":"backend/garbage.php?ckSize=20",
+            "uploadpath":"backend/empty.php"
+        }
+    ]
+}
