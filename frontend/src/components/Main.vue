@@ -139,12 +139,10 @@ async function fetchSpeedData() {
       GetSpeed().then((result) =>{
         try {
           const parsedData = JSON.parse(result)
-          if(!multiSelectEnabled.value){
             downSpeed.value = parsedData.DownSpeedKBps * 1000
             upSpeed.value = parsedData.UpSpeedKBps * 1000
             downData.value = parsedData.TotalDData 
             upData.value = parsedData.TotalUData
-          }
           resolve({ success: true})
           if (parsedData.Is_done != 1){
             const res = fetchSpeedData();
@@ -220,7 +218,11 @@ async function asyGetInfo(){
       try {
         const parsedData = JSON.parse(result)
         userInfo.value = parsedData
-        ElMessage.info('获取用户信息成功')
+        if(userInfo.value.HostIP != undefined && userInfo.value.HostIP != ""){
+          ElMessage.info('获取用户信息成功')
+        } else {
+          ElMessage.error('获取用户信息失败')
+        }
         resolve({ success: true})
       } catch (error) {
           console.error('JSON 解析失败:', error)
@@ -341,7 +343,7 @@ async function asyParseNode() {
           </el-col>
           <el-col :span="4">
             <el-checkbox v-model="multiSelectEnabled">
-              开启多选
+              开启多选(勾选后不支持显示实时速度)
             </el-checkbox>
           </el-col>
           <el-slider v-model="threads" :min="1" :max="64" show-input style="width: 90%;" />
