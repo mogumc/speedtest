@@ -99,23 +99,10 @@ func parseContentHeader(resp *http.Response) (expectedSize int64, isChunked bool
 	}
 	return 0, true
 }
-func SingleThreadTest(bestNode global.ApacheAgent) global.SpeedTestResult {
-	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.DownloadPath)
-	fmt.Printf("[+] 单线程下载测速开始 URL=%s\n", url)
-	speed, duration, totaldata := DownloadTestWithURL(url, 1)
-	return global.SpeedTestResult{
-		NodeName:   bestNode.Name,
-		HostIP:     bestNode.HostIP,
-		SpeedKBps:  speed,
-		DurationMs: duration,
-		Threads:    1,
-		TotalData:  totaldata,
-	}
-}
 
 func MultiThreadTest(bestNode global.ApacheAgent, threadCount int) global.SpeedTestResult {
 	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.DownloadPath)
-	fmt.Printf("[+] 多线程下载测速开始 URL=%s Thread=%d\n", url, threadCount)
+	fmt.Printf("[+] 下载测速开始 URL=%s Thread=%d\n", url, threadCount)
 	type result struct {
 		speed     float64
 		duration  int64

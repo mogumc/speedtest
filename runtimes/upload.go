@@ -109,15 +109,9 @@ func UploadTestWithURL(url string, duration time.Duration, ThreadID int) (result
 	return result
 }
 
-func SingleThreadUploadTest(bestNode global.ApacheAgent) global.SpeedTestResult {
-	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.UploadPath)
-	fmt.Printf("[+] 单线程上传测速开始 URL=%s\n", url)
-	return UploadTestWithURL(url, global.TestDuration, 1)
-}
-
 func MultiThreadUploadTest(bestNode global.ApacheAgent, threadCount int) global.SpeedTestResult {
 	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.UploadPath)
-	fmt.Printf("[+] 多线程上传测速开始 URL=%s Thread=%d\n", url, threadCount)
+	fmt.Printf("[+] 上传测速开始 URL=%s Thread=%d\n", url, threadCount)
 	type resultStruct struct {
 		SpeedKBps  float64
 		DurationMs int64

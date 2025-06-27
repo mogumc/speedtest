@@ -11,7 +11,6 @@ import (
 
 func startTest(id []int, threads int, mode int) {
 	CleanupSpeed()
-	StartGlobalSpeedUpdater()
 	if len(id) == 0 {
 		muiltnodetest(global.GlobalBestAgent, threads, mode)
 		global.GlobalSpeed.Mutex.Lock()
@@ -33,7 +32,7 @@ func startTest(id []int, threads int, mode int) {
 			for _, idx := range id {
 				go func(agent global.ApacheAgent) {
 					defer wg.Done()
-					res := runtimes.SingleThreadTest(agent)
+					res := runtimes.MultiThreadTest(agent, 1)
 					resultChan <- res
 				}(global.GlobalApacheAgents[idx])
 			}
@@ -56,7 +55,7 @@ func startTest(id []int, threads int, mode int) {
 			for _, idx := range id {
 				go func(agent global.ApacheAgent) {
 					defer wg.Done()
-					res := runtimes.SingleThreadUploadTest(agent)
+					res := runtimes.MultiThreadUploadTest(agent, 1)
 					resultChan <- res
 				}(global.GlobalApacheAgents[idx])
 			}
@@ -83,6 +82,7 @@ func startTest(id []int, threads int, mode int) {
 }
 
 func muiltnodetest(agent global.ApacheAgent, threads, mode int) error {
+	StartGlobalSpeedUpdater()
 	NewBandWidth := utils.BandwidthToGbps(agent.BandWidth)
 	ping, err := utils.PingNode(&agent)
 	if err != nil {
@@ -121,6 +121,9 @@ func summarizeSpeed(results []global.SpeedTestResult) (float64, float64) {
 		totalSpeedKBps += res.SpeedKBps
 		totalData += res.TotalData
 	}
+
+	fmt.Printf("\n📤【多节点速度】 %s\n", utils.ReadableSize(totalSpeedKBps))
+	fmt.Printf("📍 成功节点数量: %d\n", len(results))
 	return totalSpeedKBps, totalData
 }
 
