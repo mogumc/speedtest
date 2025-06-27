@@ -31,10 +31,10 @@ build: windows_amd64 windows_arm64 linux_amd64 linux_arm64 mac_amd64 mac_arm64
 
 # ========== 各平台构建 ==========
 windows_amd64:
-	GOOS=windows GOARCH=amd64 $(WAILS) build -platform=windows/amd64 $(LDFLAGS) -noconsole -o $(WINDOWS_AMD64)
+	GOOS=windows GOARCH=amd64 $(WAILS) build -platform=windows/amd64 $(LDFLAGS) -o $(WINDOWS_AMD64)
 
 windows_arm64:
-	GOOS=windows GOARCH=arm64 $(WAILS) build -platform=windows/arm64 $(LDFLAGS) -noconsole -o $(WINDOWS_ARM64)
+	GOOS=windows GOARCH=arm64 $(WAILS) build -platform=windows/arm64 $(LDFLAGS) -o $(WINDOWS_ARM64)
 
 linux_amd64:
 	GOOS=linux GOARCH=amd64 $(WAILS) build -platform=linux/amd64 $(LDFLAGS) -o $(LINUX_AMD64)
