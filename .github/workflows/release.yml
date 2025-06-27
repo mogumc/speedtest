@@ -1,0 +1,87 @@
+name: Build and Package Application
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: amd64
+            goos: linux
+            suffix: linux-amd64
+          - os: ubuntu-latest
+            arch: arm64
+            goos: linux
+            suffix: linux-arm64
+          - os: macos-latest
+            arch: x64
+            goos: darwin
+            suffix: macos-amd64
+          - os: macos-latest
+            arch: arm64
+            goos: darwin
+            suffix: macos-arm64
+          - os: windows-latest
+            arch: x64
+            goos: windows
+            suffix: windows-amd64
+          - os: windows-latest
+            arch: ARM64
+            goos: windows
+            suffix: windows-arm64
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Wails (from NPM)
+        run: npm install -g wails@latest
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+        
+      - name: Build with make
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          export PATH=$PATH:$(npm bin)
+          make
+
+      - name: Upload Artifacts
+        if: matrix.arch == 'amd64' && matrix.goos != 'darwin'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.suffix }}
+          path: build/*
+
+  release:
+    name: Create Draft Release
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Merge Packages
+        run: |
+          mkdir -p release
+          find artifacts -type f -exec cp {} release/ \;
+
+      - name: Create Draft Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: release/*
