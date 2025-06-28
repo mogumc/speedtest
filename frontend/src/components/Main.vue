@@ -343,7 +343,7 @@ async function asyParseNode() {
           </el-col>
           <el-col :span="4">
             <el-checkbox v-model="multiSelectEnabled">
-              开启多选(勾选后不支持显示实时速度)
+              开启多选
             </el-checkbox>
           </el-col>
           <el-slider v-model="threads" :min="1" :max="64" show-input style="width: 90%;" />
