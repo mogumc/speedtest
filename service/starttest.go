@@ -24,7 +24,9 @@ func startTest(id []int, threads int, mode int) {
 		var UpSpeedKBps float64 = 0
 		var TotalUData float64 = 0
 		if mode == 1 || mode == 0 {
+			global.GlobalSpeed.Mutex.Lock()
 			global.GlobalSpeed.RequestCount = 0
+			global.GlobalSpeed.Mutex.Unlock()
 			resultChan := make(chan global.SpeedTestResult, len(id))
 			var wg sync.WaitGroup
 			wg.Add(len(id))
@@ -45,7 +47,9 @@ func startTest(id []int, threads int, mode int) {
 			TotalDData = TotalData * 1024 * 1024
 		}
 		if mode == 2 || mode == 0 {
+			global.GlobalSpeed.Mutex.Lock()
 			global.GlobalSpeed.RequestCount = 0
+			global.GlobalSpeed.Mutex.Unlock()
 			resultChan := make(chan global.SpeedTestResult, len(id))
 			var wg sync.WaitGroup
 			wg.Add(len(id))
@@ -105,11 +109,13 @@ func muiltnodetest(agent global.ApacheAgent, threads, mode int) error {
 ==============================
 `, agent.Name, agent.Description, agent.HostIP, NewBandWidth, ping)
 	if mode == 1 || mode == 0 {
+
 		multiDResult := runtimes.MultiThreadTest(agent, threads)
 		DownSpeedKBps = multiDResult.SpeedKBps
 		TotalDData = multiDResult.TotalData * 1024 * 1024
 	}
 	if mode == 2 || mode == 0 {
+		global.GlobalSpeed.UpStartAt = time.Now()
 		multiUResult := runtimes.MultiThreadUploadTest(agent, threads)
 		UpSpeedKBps = multiUResult.SpeedKBps
 		TotalUData = multiUResult.TotalData * 1024 * 1024
@@ -151,18 +157,32 @@ func StartGlobalSpeedUpdater() {
 			<-ticker.C
 			global.GlobalSpeed.Mutex.Lock()
 			var downTotal, upTotal float64
-			for _, speed := range global.GlobalSpeed.ThreadDSpeeds {
-				downTotal += speed
+			if global.GlobalSpeed.DownDone != 1 {
+				downTotal = global.GlobalSpeed.TotalDData
+				downStartAt := global.GlobalSpeed.DownStartAt
+				DownSpeedKBps := calculateSpeedInKBps(downTotal, downStartAt)
+				global.GlobalSpeed.DownSpeedKBps = DownSpeedKBps
 			}
-			for _, speed := range global.GlobalSpeed.ThreadUSpeeds {
-				upTotal += speed
+			if global.GlobalSpeed.UpDone != 1 {
+				upTotal = global.GlobalSpeed.TotalUData
+				upStartAt := global.GlobalSpeed.UpStartAt
+				UpSpeedKBps := calculateSpeedInKBps(upTotal, upStartAt)
+				global.GlobalSpeed.UpSpeedKBps = UpSpeedKBps
 			}
-			global.GlobalSpeed.DownSpeedKBps = downTotal
-			global.GlobalSpeed.UpSpeedKBps = upTotal
 			global.GlobalSpeed.LastUpdate = time.Now()
 			global.GlobalSpeed.Mutex.Unlock()
 		}
 	}()
+}
+
+func calculateSpeedInKBps(current float64, startTime time.Time) float64 {
+	elapsed := time.Since(startTime).Seconds()
+	if elapsed <= 0 {
+		return 0
+	}
+	speedInBytes := current / elapsed
+	speedInKB := speedInBytes / 1024.0
+	return speedInKB
 }
 
 func CleanupSpeed() {
@@ -174,13 +194,8 @@ func CleanupSpeed() {
 	global.GlobalSpeed.TotalDData = 0
 	global.GlobalSpeed.TotalUData = 0
 	global.GlobalSpeed.RequestCount = 0
+	global.GlobalSpeed.DownStartAt = time.Now()
+	global.GlobalSpeed.UpStartAt = time.Now()
 	global.GlobalSpeed.LastUpdate = time.Now()
 	global.GlobalSpeed.Is_done = 0
-
-	for k := range global.GlobalSpeed.ThreadDSpeeds {
-		delete(global.GlobalSpeed.ThreadDSpeeds, k)
-	}
-	for k := range global.GlobalSpeed.ThreadUSpeeds {
-		delete(global.GlobalSpeed.ThreadUSpeeds, k)
-	}
 }

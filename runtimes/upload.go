@@ -77,10 +77,7 @@ func UploadTestWithURL(url string, duration time.Duration, ThreadID int) (result
 		_ = resp.Body.Close()
 		actualSent := trackedReader.Total
 		uploadDuration := time.Since(uploadStart)
-		speedKBps := float64(actualSent) / 1024 / uploadDuration.Seconds()
-		threadID := string(ThreadID)
 		global.GlobalSpeed.Mutex.Lock()
-		global.GlobalSpeed.ThreadUSpeeds[threadID] = speedKBps
 		global.GlobalSpeed.TotalUData += float64(actualSent)
 		global.GlobalSpeed.RequestCount++
 		global.GlobalSpeed.LastUpdate = time.Now()
@@ -112,6 +109,10 @@ func UploadTestWithURL(url string, duration time.Duration, ThreadID int) (result
 func MultiThreadUploadTest(bestNode global.ApacheAgent, threadCount int) global.SpeedTestResult {
 	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.UploadPath)
 	fmt.Printf("[+] 上传测速开始 URL=%s Thread=%d\n", url, threadCount)
+	global.GlobalSpeed.Mutex.Lock()
+	global.GlobalSpeed.UpDone = 0
+	global.GlobalSpeed.UpStartAt = time.Now()
+	global.GlobalSpeed.Mutex.Unlock()
 	type resultStruct struct {
 		SpeedKBps  float64
 		DurationMs int64
@@ -155,7 +156,9 @@ func MultiThreadUploadTest(bestNode global.ApacheAgent, threadCount int) global.
 
 	fmt.Printf("[+] 多线程上传总结 速度 %s 数据 %.2f MB\n",
 		utils.ReadableSize(totalSpeed), totalData)
-
+	global.GlobalSpeed.Mutex.Lock()
+	global.GlobalSpeed.UpDone = 1
+	global.GlobalSpeed.Mutex.Unlock()
 	return global.SpeedTestResult{
 		NodeName:   bestNode.Name,
 		HostIP:     bestNode.HostIP,

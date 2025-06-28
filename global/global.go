@@ -31,7 +31,7 @@ type ApacheAgent struct {
 
 var GlobalApacheAgents []ApacheAgent
 var GlobalBestAgent ApacheAgent
-var GlobalSpeed = NewSpeedTestSpeed()
+var GlobalSpeed = &SpeedTestSpeed{}
 
 var (
 	UploadBlockSize = 5 * 1024 * 1024 // 5 MB
@@ -55,17 +55,12 @@ type SpeedTestSpeed struct {
 	UpSpeedKBps   float64
 	Threads       int
 	TotalDData    float64
+	DownStartAt   time.Time
+	DownDone      int
 	TotalUData    float64
-	ThreadDSpeeds map[string]float64
-	ThreadUSpeeds map[string]float64
+	UpStartAt     time.Time
+	UpDone        int
 	RequestCount  int16
 	LastUpdate    time.Time
 	Is_done       int
-}
-
-func NewSpeedTestSpeed() *SpeedTestSpeed {
-	return &SpeedTestSpeed{
-		ThreadDSpeeds: make(map[string]float64),
-		ThreadUSpeeds: make(map[string]float64),
-	}
 }

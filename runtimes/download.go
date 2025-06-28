@@ -65,8 +65,6 @@ func DownloadTestWithURL(url string, ThreadID int) (speedKBps float64, durationM
 		lastEnd = time.Now()
 		speedKBps = float64(currentBytes) / 1024 / elapsed
 		global.GlobalSpeed.Mutex.Lock()
-		threadID := string(ThreadID)
-		global.GlobalSpeed.ThreadDSpeeds[threadID] = speedKBps
 		global.GlobalSpeed.TotalDData += float64(currentBytes)
 		global.GlobalSpeed.RequestCount++
 		global.GlobalSpeed.LastUpdate = lastEnd
@@ -103,6 +101,10 @@ func parseContentHeader(resp *http.Response) (expectedSize int64, isChunked bool
 func MultiThreadTest(bestNode global.ApacheAgent, threadCount int) global.SpeedTestResult {
 	url := fmt.Sprintf("%s://%s/%s", bestNode.Protocol, bestNode.HostIP, bestNode.DownloadPath)
 	fmt.Printf("[+] 下载测速开始 URL=%s Thread=%d\n", url, threadCount)
+	global.GlobalSpeed.Mutex.Lock()
+	global.GlobalSpeed.DownDone = 0
+	global.GlobalSpeed.DownStartAt = time.Now()
+	global.GlobalSpeed.Mutex.Unlock()
 	type result struct {
 		speed     float64
 		duration  int64
@@ -142,7 +144,9 @@ func MultiThreadTest(bestNode global.ApacheAgent, threadCount int) global.SpeedT
 
 	fmt.Printf("[+] 多线程下载总结 速度 %s 数据 %.2f MB\n",
 		utils.ReadableSize(totalSpeed), smdata)
-
+	global.GlobalSpeed.Mutex.Lock()
+	global.GlobalSpeed.DownDone = 1
+	global.GlobalSpeed.Mutex.Unlock()
 	return global.SpeedTestResult{
 		NodeName:   bestNode.Name,
 		HostIP:     bestNode.HostIP,
