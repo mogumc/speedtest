@@ -38,6 +38,7 @@
 }
 ```
 放于``local``文件夹内  
+理论上下载能够获取到Content-Length和不禁止Post请求的服务器都可以作为节点  
 
 ## Feature 
 - [x] 单线程测速
