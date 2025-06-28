@@ -65,6 +65,13 @@ watch(
     }
 );
 
+watch(
+  () => multiSelectEnabled.value,
+  () => {
+    handleNodeChange()
+  }
+);
+
 function handleNodeChange() {
   if (!multiSelectEnabled.value && selectedNodeIds.value.length > 1) {
     selectedNodeIds.value = [selectedNodeIds.value[selectedNodeIds.value.length - 1]]
