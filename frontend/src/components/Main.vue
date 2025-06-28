@@ -99,7 +99,7 @@ function startTest() {
 function ParseBandWidth(value){
     const units = ['bps','Kbps', 'Mbps', 'Gbps', 'Tbps'];
     let i = 0;
-    value = value * 8 * 1000
+    value = value * 8
     while (value >= 1000 && i < units.length - 1) {
       value /= 1000;
       i++;
@@ -139,8 +139,8 @@ async function fetchSpeedData() {
       GetSpeed().then((result) =>{
         try {
           const parsedData = JSON.parse(result)
-            downSpeed.value = parsedData.DownSpeedKBps
-            upSpeed.value = parsedData.UpSpeedKBps
+            downSpeed.value = parsedData.DownSpeedKBps * 1024
+            upSpeed.value = parsedData.UpSpeedKBps * 1024
             downData.value = parsedData.TotalDData 
             upData.value = parsedData.TotalUData
           resolve({ success: true})
@@ -148,8 +148,8 @@ async function fetchSpeedData() {
             const res = fetchSpeedData();
           } else {
             btnDis.value = 0
-            downSpeed.value = parsedData.DownSpeedKBps
-            upSpeed.value = parsedData.UpSpeedKBps
+            downSpeed.value = parsedData.DownSpeedKBps * 1024
+            upSpeed.value = parsedData.UpSpeedKBps * 1024
             downData.value = parsedData.TotalDData 
             upData.value = parsedData.TotalUData
           }
