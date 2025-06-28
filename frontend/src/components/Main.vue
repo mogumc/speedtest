@@ -99,7 +99,7 @@ function startTest() {
 function ParseBandWidth(value){
     const units = ['bps','Kbps', 'Mbps', 'Gbps', 'Tbps'];
     let i = 0;
-    value = value * 8
+    value = value * 8 * 1000
     while (value >= 1000 && i < units.length - 1) {
       value /= 1000;
       i++;
@@ -139,8 +139,8 @@ async function fetchSpeedData() {
       GetSpeed().then((result) =>{
         try {
           const parsedData = JSON.parse(result)
-            downSpeed.value = parsedData.DownSpeedKBps * 1000
-            upSpeed.value = parsedData.UpSpeedKBps * 1000
+            downSpeed.value = parsedData.DownSpeedKBps
+            upSpeed.value = parsedData.UpSpeedKBps
             downData.value = parsedData.TotalDData 
             upData.value = parsedData.TotalUData
           resolve({ success: true})
@@ -148,8 +148,8 @@ async function fetchSpeedData() {
             const res = fetchSpeedData();
           } else {
             btnDis.value = 0
-            downSpeed.value = parsedData.DownSpeedKBps * 1000
-            upSpeed.value = parsedData.UpSpeedKBps * 1000
+            downSpeed.value = parsedData.DownSpeedKBps
+            upSpeed.value = parsedData.UpSpeedKBps
             downData.value = parsedData.TotalDData 
             upData.value = parsedData.TotalUData
           }
@@ -259,11 +259,11 @@ async function asyParseNode() {
       <!-- 侧边栏：UserInfo -->
       <h3>用户信息</h3>
       <el-descriptions :column="1" border>
-        <el-descriptions-item label="城市">{{ userInfo.City }}</el-descriptions-item>
-        <el-descriptions-item label="城市ID">{{ userInfo.CityID }}</el-descriptions-item>
         <el-descriptions-item label="IP地址">{{ userInfo.HostIP }}</el-descriptions-item>
+        <el-descriptions-item label="国家">{{ userInfo.Country }}</el-descriptions-item>
+        <el-descriptions-item label="省份">{{ userInfo.Province }}</el-descriptions-item>
+        <el-descriptions-item label="市区">{{ userInfo.City + userInfo.District }}</el-descriptions-item>
         <el-descriptions-item label="运营商">{{ userInfo.ISP }}</el-descriptions-item>
-        <el-descriptions-item label="运营商ID">{{ userInfo.ISPID }}</el-descriptions-item>
       </el-descriptions>
     <!-- 侧边栏：nodeInfo -->
       <h3>节点信息</h3>
