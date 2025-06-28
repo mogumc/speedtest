@@ -1,6 +1,7 @@
 package runtimes
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,133 +27,73 @@ type HelloRequest struct {
 func InitGlobal() error {
 	respBytes, err := SendHelloRequest()
 	if err != nil {
-		return fmt.Errorf("发送 Hello 请求失败: %v", err)
+		return fmt.Errorf("获取用户失败: %v", err)
 	}
-
 	var respMap map[string]interface{}
 	if err := json.Unmarshal(respBytes, &respMap); err != nil {
 		return fmt.Errorf("解析 JSON 失败: %v", err)
 	}
 
-	client, ok := respMap["client"].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("client 字段解析失败")
-	}
-
-	if hostIp, ok := client["hostIp"].(string); ok {
+	if hostIp, ok := respMap["ip"].(string); ok {
 		global.GlobalClientInfo.HostIP = hostIp
 	}
 
-	location, ok := client["location"].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("location 字段解析失败")
+	if city, ok := respMap["city"].(string); ok {
+		global.GlobalClientInfo.City = city
 	}
-	if shortName, ok := location["shortName"].(string); ok {
-		global.GlobalClientInfo.City = shortName
-	}
-	if id, ok := location["id"].(float64); ok {
-		global.GlobalClientInfo.CityID = int(id)
+	if district, ok := respMap["district"].(string); ok {
+		global.GlobalClientInfo.District = district
 	}
 
-	operator, ok := client["operator"].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("operator 字段解析失败")
+	if ispname, ok := respMap["isp"].(string); ok {
+		global.GlobalClientInfo.ISP = ispname
 	}
-	if name, ok := operator["name"].(string); ok {
-		global.GlobalClientInfo.ISP = name
+	if country, ok := respMap["country"].(string); ok {
+		global.GlobalClientInfo.Country = country
 	}
-	if ispid, ok := operator["id"].(float64); ok {
-		global.GlobalClientInfo.ISPID = int(ispid)
+	if province, ok := respMap["province"].(string); ok {
+		global.GlobalClientInfo.Province = province
 	}
-
-	refAgentsInterface, ok := respMap["referenceApacheAgents"].([]interface{})
-	if !ok || refAgentsInterface == nil {
-		return fmt.Errorf("referenceApacheAgents 缺失或不是一个数组")
-	}
-
-	for _, item := range refAgentsInterface {
-		agentMap, ok := item.(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		hostIP, _ := agentMap["hostIp"].(string)
-
-		location := 0
-		if v, ok := agentMap["location"].(float64); ok {
-			location = int(v)
-		}
-
-		name, _ := agentMap["name"].(string)
-
-		description, _ := agentMap["description"].(string)
-
-		operator := 0
-		if v, ok := agentMap["operator"].(float64); ok {
-			operator = int(v)
-		}
-
-		blockSize := int64(0)
-		if v, ok := agentMap["blockSize"].(float64); ok {
-			blockSize = int64(v)
-		}
-
-		bandwidth := int64(0)
-		if v, ok := agentMap["bandwidth"].(float64); ok {
-			bandwidth = int64(v)
-		}
-
-		protocol, _ := agentMap["protocol"].(string)
-
-		global.GlobalApacheAgents = append(global.GlobalApacheAgents, global.ApacheAgent{
-			HostIP:       hostIP,
-			Location:     location,
-			Name:         name,
-			Operator:     operator,
-			BlockSize:    blockSize,
-			BandWidth:    bandwidth,
-			Protocol:     protocol,
-			Description:  description,
-			DownloadPath: "speed/100.data",
-			UploadPath:   "speed/100000.data",
-		})
-
-	}
-
 	return nil
 }
 
 func SendHelloRequest() ([]byte, error) {
-	url := "https://speed.gd.cn/hello"
-
-	requestBody := HelloRequest{
-		NeedToken:                false,
-		Manufacturer:             "vixtel",
-		NeedClient:               true,
-		NeedNatIp:                true,
-		NeedNetIq:                true,
-		NeedPretreatment:         true,
-		NeedReference:            true,
-		NeedReferenceApacheAgent: true,
-		NeedWebPlugin:            true,
-	}
-
-	bodyBytes, err := json.Marshal(requestBody)
-	if err != nil {
-		return nil, err
-	}
+	url := "https://api-v3.speedtest.cn/ip"
 
 	headers := map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+		"CLIENTECTYPE": "65",
 	}
 
-	response, err := utils.HTTPPost(url, headers, bodyBytes)
+	response, err := utils.HTTPGet(url, headers)
 	if err != nil {
-		return nil, fmt.Errorf("HTTP POST request failed: %v", err)
+		return nil, fmt.Errorf("HTTP Get request failed: %v", err)
 	}
 
-	return response, nil
+	var result map[string]interface{}
+	if err := json.Unmarshal(response, &result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response JSON: %v", err)
+	}
+
+	dataField, ok := result["data"].(string)
+	if !ok || dataField == "" {
+		return nil, fmt.Errorf("data field not found or invalid in JSON")
+	}
+
+	key := []byte("5ECC5D62140EC099")
+	iv := []byte("E63EA892A702EEAA")
+	encryptedData, err := base64.StdEncoding.DecodeString(dataField)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode base64 data: %v", err)
+	}
+	decrypt, err := utils.AesDecrypt(encryptedData, key, iv)
+	if err != nil {
+		return nil, fmt.Errorf("AES decryption failed: %v", err)
+	}
+
+	return decrypt, nil
+
 }
 
 func LoadLocalApacheAgentsFromFile(filePath string) ([]global.ApacheAgent, error) {

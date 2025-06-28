@@ -58,6 +58,18 @@
             "protocol": "https",
             "downloadpath":"tfscom/TB1fASCxhjaK1RjSZKzXXXVwXXa.jpg",
             "uploadpath":"favicon.ico"
+        },
+        {
+            "bandwidth": 1250000000,
+            "blockSize": 0,
+            "description": "宽带测速器",
+            "hostIp": "softdlc.360tpcdn.com:80",
+            "location": 0,
+            "name":"360",
+            "operator": 100000,
+            "protocol": "http",
+            "downloadpath":"auto/20201130/2000000064_f07aefc3d918ebdafa9418f3f5ef5f9c.exe",
+            "uploadpath":"favicon.ico"
         }
     ]
 }

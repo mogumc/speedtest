@@ -15,32 +15,10 @@ type PingResult struct {
 }
 
 func SelectBestNode() (*global.ApacheAgent, error) {
-	cityID := global.GlobalClientInfo.CityID
-	NetID := global.GlobalClientInfo.ISPID
-	var matching []*global.ApacheAgent
-	for idx := range global.GlobalApacheAgents {
-		agent := &global.GlobalApacheAgents[idx]
-		if agent.Location == cityID && agent.Operator == NetID {
-			matching = append(matching, agent)
-		}
-	}
-
-	if len(matching) > 0 {
-		return matching[0], nil
-	}
-
-	for idx := range global.GlobalApacheAgents {
-		agent := &global.GlobalApacheAgents[idx]
-		if agent.Location == cityID {
-			matching = append(matching, agent)
-		}
-	}
-
-	if len(matching) > 0 {
-		return matching[0], nil
-	}
-
 	resultsChan := make(chan PingResult, len(global.GlobalApacheAgents))
+	if len(global.GlobalApacheAgents) < 1 {
+		return nil, fmt.Errorf("无可用节点")
+	}
 	for idx := range global.GlobalApacheAgents {
 		go func(agent *global.ApacheAgent) {
 			delay, err := utils.PingNode(agent)
@@ -69,7 +47,7 @@ func SelectBestNode() (*global.ApacheAgent, error) {
 	if best != nil {
 		return best, nil
 	}
-	return nil, fmt.Errorf("无法获取可用节点")
+	return &global.GlobalApacheAgents[0], fmt.Errorf("测速失败,默认使用第一个")
 }
 
 func ShowAllNode(Agents []global.ApacheAgent) string {

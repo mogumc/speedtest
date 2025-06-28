@@ -12,14 +12,23 @@ func initNode() string {
 	err := runtimes.InitGlobal()
 	info := ""
 	if err != nil {
-		info += fmt.Sprintf("[x] 在线配置加载失败: %v", err)
+		info += fmt.Sprintf("[x] 在线配置加载失败: %v\n", err)
 	}
 	LocalPath := "local"
 	localAgents, err := runtimes.LoadAllLocalApacheAgents(LocalPath)
 	if err != nil {
-		info += fmt.Sprintf("[x] 本地配置加载失败: %v", err)
+		info += fmt.Sprintf("[x] 本地配置加载失败: %v\n", err)
 	} else {
 		global.GlobalApacheAgents = utils.MergeUnique(global.GlobalApacheAgents, localAgents)
+	}
+	bestNode, err := runtimes.SelectBestNode()
+	if err != nil {
+		info += fmt.Sprintf("[x] 获取最佳节点失败: %v", err)
+		if len(global.GlobalApacheAgents) > 0 {
+			global.GlobalBestAgent = global.GlobalApacheAgents[0]
+		}
+	} else {
+		global.GlobalBestAgent = *bestNode
 	}
 	if len(global.GlobalApacheAgents) < 1 {
 		return info
@@ -29,17 +38,9 @@ func initNode() string {
 }
 
 func getInfo() string {
-	datas := map[string]interface{}{
-		"HostIP": global.GlobalClientInfo.HostIP,
-		"City":   global.GlobalClientInfo.City,
-		"CityID": global.GlobalClientInfo.CityID,
-		"ISP":    global.GlobalClientInfo.ISP,
-		"ISPID":  global.GlobalClientInfo.ISPID,
-	}
-	jsonBytes, err := json.Marshal(datas)
+	jsonBytes, err := json.Marshal(global.GlobalClientInfo)
 	if err != nil {
 		return "1"
 	}
-
 	return string(jsonBytes)
 }

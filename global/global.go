@@ -6,11 +6,12 @@ import (
 )
 
 type ClientInfo struct {
-	HostIP string
-	City   string
-	CityID int
-	ISP    string
-	ISPID  int
+	HostIP   string
+	City     string
+	District string
+	ISP      string
+	Country  string
+	Province string
 }
 
 var GlobalClientInfo = &ClientInfo{}
@@ -33,7 +34,7 @@ var GlobalBestAgent ApacheAgent
 var GlobalSpeed = NewSpeedTestSpeed()
 
 var (
-	UploadBlockSize = 20 * 1024 * 1024 // 20 MB
+	UploadBlockSize = 5 * 1024 * 1024 // 5 MB
 	UserAgent       = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
 	TestDuration    = 10 * time.Second
 	MaxTimeout      = 30 * time.Second

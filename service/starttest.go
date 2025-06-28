@@ -13,17 +13,16 @@ func startTest(id []int, threads int, mode int) {
 	CleanupSpeed()
 	if len(id) == 0 {
 		muiltnodetest(global.GlobalBestAgent, threads, mode)
-		global.GlobalSpeed.Mutex.Lock()
-		global.GlobalSpeed.Is_done = 1
-		global.GlobalSpeed.Mutex.Unlock()
+
 	} else if len(id) == 1 {
 		muiltnodetest(global.GlobalApacheAgents[id[0]], threads, mode)
-		global.GlobalSpeed.Mutex.Lock()
-		global.GlobalSpeed.Is_done = 1
-		global.GlobalSpeed.Mutex.Unlock()
 	} else if len(id) > 1 {
 		var downresults []global.SpeedTestResult
 		var upresults []global.SpeedTestResult
+		var DownSpeedKBps float64 = 0
+		var TotalDData float64 = 0
+		var UpSpeedKBps float64 = 0
+		var TotalUData float64 = 0
 		if mode == 1 || mode == 0 {
 			global.GlobalSpeed.RequestCount = 0
 			resultChan := make(chan global.SpeedTestResult, len(id))
@@ -42,10 +41,8 @@ func startTest(id []int, threads int, mode int) {
 				downresults = append(downresults, res)
 			}
 			SpeedKBps, TotalData := summarizeSpeed(downresults)
-			global.GlobalSpeed.Mutex.Lock()
-			global.GlobalSpeed.DownSpeedKBps = SpeedKBps
-			global.GlobalSpeed.TotalDData = TotalData * 1024 * 1024
-			global.GlobalSpeed.Mutex.Unlock()
+			DownSpeedKBps = SpeedKBps
+			TotalDData = TotalData * 1024 * 1024
 		}
 		if mode == 2 || mode == 0 {
 			global.GlobalSpeed.RequestCount = 0
@@ -64,18 +61,24 @@ func startTest(id []int, threads int, mode int) {
 			for res := range resultChan {
 				upresults = append(upresults, res)
 			}
-			global.GlobalSpeed.Mutex.Lock()
 			SpeedKBps, TotalData := summarizeSpeed(upresults)
-			global.GlobalSpeed.UpSpeedKBps = SpeedKBps
-			global.GlobalSpeed.TotalUData = TotalData * 1024 * 1024
-			global.GlobalSpeed.Mutex.Unlock()
+			UpSpeedKBps = SpeedKBps
+			TotalUData = TotalData * 1024 * 1024
 		}
 		global.GlobalSpeed.Mutex.Lock()
 		global.GlobalSpeed.Is_done = 1
+		global.GlobalSpeed.DownSpeedKBps = DownSpeedKBps
+		global.GlobalSpeed.TotalDData = TotalDData
+		global.GlobalSpeed.UpSpeedKBps = UpSpeedKBps
+		global.GlobalSpeed.TotalUData = TotalUData
 		global.GlobalSpeed.Mutex.Unlock()
 	} else {
 		global.GlobalSpeed.Mutex.Lock()
 		global.GlobalSpeed.Is_done = 1
+		global.GlobalSpeed.DownSpeedKBps = 0
+		global.GlobalSpeed.TotalDData = 0
+		global.GlobalSpeed.UpSpeedKBps = 0
+		global.GlobalSpeed.TotalUData = 0
 		global.GlobalSpeed.Mutex.Unlock()
 		return
 	}
@@ -83,6 +86,10 @@ func startTest(id []int, threads int, mode int) {
 
 func muiltnodetest(agent global.ApacheAgent, threads, mode int) error {
 	StartGlobalSpeedUpdater()
+	var DownSpeedKBps float64 = 0
+	var TotalDData float64 = 0
+	var UpSpeedKBps float64 = 0
+	var TotalUData float64 = 0
 	NewBandWidth := utils.BandwidthToGbps(agent.BandWidth)
 	ping, err := utils.PingNode(&agent)
 	if err != nil {
@@ -99,18 +106,21 @@ func muiltnodetest(agent global.ApacheAgent, threads, mode int) error {
 `, agent.Name, agent.Description, agent.HostIP, NewBandWidth, ping)
 	if mode == 1 || mode == 0 {
 		multiDResult := runtimes.MultiThreadTest(agent, threads)
-		global.GlobalSpeed.Mutex.Lock()
-		global.GlobalSpeed.DownSpeedKBps = multiDResult.SpeedKBps
-		global.GlobalSpeed.TotalDData = multiDResult.TotalData * 1024 * 1024
-		global.GlobalSpeed.Mutex.Unlock()
+		DownSpeedKBps = multiDResult.SpeedKBps
+		TotalDData = multiDResult.TotalData * 1024 * 1024
 	}
 	if mode == 2 || mode == 0 {
 		multiUResult := runtimes.MultiThreadUploadTest(agent, threads)
-		global.GlobalSpeed.Mutex.Lock()
-		global.GlobalSpeed.UpSpeedKBps = multiUResult.SpeedKBps
-		global.GlobalSpeed.TotalUData = multiUResult.TotalData * 1024 * 1024
-		global.GlobalSpeed.Mutex.Unlock()
+		UpSpeedKBps = multiUResult.SpeedKBps
+		TotalUData = multiUResult.TotalData * 1024 * 1024
 	}
+	global.GlobalSpeed.Mutex.Lock()
+	global.GlobalSpeed.Is_done = 1
+	global.GlobalSpeed.DownSpeedKBps = DownSpeedKBps
+	global.GlobalSpeed.TotalDData = TotalDData
+	global.GlobalSpeed.UpSpeedKBps = UpSpeedKBps
+	global.GlobalSpeed.TotalUData = TotalUData
+	global.GlobalSpeed.Mutex.Unlock()
 	return nil
 }
 

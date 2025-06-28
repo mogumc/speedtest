@@ -33,8 +33,10 @@ func MergeUnique(agents ...[]global.ApacheAgent) []global.ApacheAgent {
 	for _, list := range agents {
 		for _, item := range list {
 			if _, ok := seen[item.HostIP]; !ok {
-				seen[item.HostIP] = struct{}{}
-				result = append(result, item)
+				if item.HostIP != "" {
+					seen[item.HostIP] = struct{}{}
+					result = append(result, item)
+				}
 			}
 		}
 	}
