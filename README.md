@@ -2,7 +2,7 @@
     <h1>SpeedTest-GD</h1>
 </div>
 <div align="center">
-    <a href="https://dotnet.microsoft.com/zh-cn/download/dotnet/latest/runtime"><img alt="Windows" src="https://img.shields.io/badge/platform-Windows-blue?logo=windowsxp&style=flat-square&color=1E9BFA" /></a>
+    <a href="https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/"><img alt="Windows" src="https://img.shields.io/badge/platform-Windows-blue?logo=windowsxp&style=flat-square&color=1E9BFA" /></a>
     <a href="https://github.com/mogumc/MGL/releases"><img alt="Release" src="https://img.shields.io/github/v/release/mogumc/speedtest?logo=visualstudio&style=flat-square&color=1E9BFA"></a>
     <a href="./LICENSE">
         <img alt="GitHub" src="https://img.shields.io/github/license/mogumc/speedtest"/>
