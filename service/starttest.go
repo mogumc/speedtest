@@ -11,6 +11,7 @@ import (
 
 func startTest(id []int, threads int, mode int) {
 	CleanupSpeed()
+	StartGlobalSpeedUpdater()
 	if len(id) == 0 {
 		muiltnodetest(global.GlobalBestAgent, threads, mode)
 
@@ -89,7 +90,6 @@ func startTest(id []int, threads int, mode int) {
 }
 
 func muiltnodetest(agent global.ApacheAgent, threads, mode int) error {
-	StartGlobalSpeedUpdater()
 	var DownSpeedKBps float64 = 0
 	var TotalDData float64 = 0
 	var UpSpeedKBps float64 = 0
